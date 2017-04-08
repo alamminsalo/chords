@@ -4,44 +4,50 @@
 /// (eg. A, A# -> A, B♭)
 /// Highly´experimental
 pub fn formatted_notes(notes: Vec<(char, i8)>) -> Vec<(char, i8)> {
-    let mut formatted = vec![];
+    let mut formatted: Vec<(char,i8)> = vec![];
 
     for note in notes {
-        if formatted.len() == 0 {
-            formatted.push(note);
+        //If note key exists in formatted, attempt to add alt note
+        if formatted.iter().position(|&v| v.0 == note.0) != None {
+            formatted.push(alt_note(note));
         }
 
         else {
-            // If last note key signature matches the current note,
-            // format the current note as flat elevated note.
-            // Note that this doesn't alter root note
-            if formatted[formatted.len() - 1].0 == note.0 && note.1 != 0 {
-                let altnote = match note.0 {
-                    'a' => ('b', -1),
-                    'c' => ('d', -1),
-                    'f' => ('g', -1),
-                    'g' => ('a', -1),
-                    _ => note
-                };
-
-                formatted.push(altnote);
-            }
-
-            else {
-                formatted.push(note);
-            }
+            formatted.push(note);
         }
     }
 
     formatted
 }
 
+/// Returns alt note
+/// (eg. A# -> B♭)
+fn alt_note(note: (char, i8)) -> (char, i8) {
+    let notestr = note_to_str(note);
+    str_to_note(match &notestr[..] {
+        "a#" => "b♭",
+        "b♭" => "a#",
+        "b#" => "c",
+        "c♭" => "b",
+        "c#" => "d♭",
+        "d♭" => "c#",
+        "d#" => "e♭",
+        "e♭" => "d#",
+        "e#" => "f",
+        "f"  => "e#",
+        "f#" => "g♭",
+        "g♭" => "f#",
+        "g#" => "a♭",
+        _ => &notestr
+    })
+}
+
 /// Returns scale in good readable format
 pub fn formatted_scale(scale: &str) -> String {
     String::from(match scale {
-        "maj" => "Major",
-        "min" => "Minor",
-        "hmin" => "Harmonic Minor",
+        "maj" | "major"  => "Major",
+        "min" | "minor"  => "Minor",
+        "hmin" | "harmonic minor"  => "Harmonic Minor",
         "chromatic" => "Chromatic",
         _ => scale
     })
