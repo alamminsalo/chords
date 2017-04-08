@@ -18,7 +18,6 @@ pub fn chromatic_notes(root: (char, i8)) -> Vec<(char, i8)> {
 
     ///Split and join according to root note
     let root_index = v.iter().position(|&note| note == root).unwrap();
-
     let a = v[..root_index].to_vec();
     let b = v[root_index..].to_vec();
 
@@ -42,26 +41,26 @@ pub fn get_scale(scale: &str) -> Vec<u8> {
 
 #[test]
 fn test_scale() {
-
-    println!("\nMajor scale:");
-    for v in get_scale("maj") {
-        println!("{}", v);
-    }
-
-    println!("\nMinor scale:");
-    for v in get_scale("min") {
-        println!("{}", v);
-    }
-
-    println!("\nHarmonic minor scale:");
-    for v in get_scale("hmin") {
-        println!("{}", v);
-    }
-
-    println!("\nChromatic scale:");
-    for v in get_scale("chromatic") {
-        println!("{}", v);
-    }
+//
+//    println!("\nMajor scale:");
+//    for v in get_scale("maj") {
+//        println!("{}", v);
+//    }
+//
+//    println!("\nMinor scale:");
+//    for v in get_scale("min") {
+//        println!("{}", v);
+//    }
+//
+//    println!("\nHarmonic minor scale:");
+//    for v in get_scale("hmin") {
+//        println!("{}", v);
+//    }
+//
+//    println!("\nChromatic scale:");
+//    for v in get_scale("chromatic") {
+//        println!("{}", v);
+//    }
 }
 
 /// Normalizes interval to indexes in chromatic scale

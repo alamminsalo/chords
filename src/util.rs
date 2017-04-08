@@ -85,4 +85,3 @@ pub fn str_to_note(note: &str) -> (char, i8) {
     a
 }
 
-
