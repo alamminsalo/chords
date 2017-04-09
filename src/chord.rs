@@ -11,16 +11,16 @@ fn stringify_interval(interval: u8) -> String {
         2 => "sus2",
 
         /// 3rd
-        3 => "m",   // Minor 3rd 
-        4 => "",    // Major 3rd
+        3 => "b3",   // Minor 3rd 
+        4 => "3",    // Major 3rd
 
         /// 4th
         5 => "sus4",
 
         /// 5th
-        6 => "Dim5",  //Diminished 5th
-        7 => "",        //Major 5th
-        8 => "Aug",     //Augmented 5th
+        6 => "b5",  //Diminished 5th
+        7 => "5",        //Major 5th
+        8 => "aug",     //Augmented 5th
 
         /// 6th
         9 => "6",
@@ -47,8 +47,8 @@ impl Attributes {
         let mut val = String::new();
 
         // 3rd and 5th
-        if self.contains("m") {
-            if self.contains("Dim5") {
+        if self.contains("b3") {
+            if self.contains("b5") {
                 //Dim chord
                 val.push_str("dim");
             }
@@ -57,16 +57,30 @@ impl Attributes {
                 val.push_str("m");
             }
         }
-        
-        if self.contains("Aug") {
+
+        //Aug check
+        else if self.contains("aug") {
             //Augmented triad
             val.push_str("aug");
         }
 
-        // 6th
-        if self.contains("6") {
-            //6th note
-            val.push_str("6");
+        //Flat 5
+        else if self.contains("b5") {
+            val.push_str("b5");
+        }
+
+        // no5 
+        else if !self.contains("5") {
+            val.push_str("no5");
+        }
+
+        // No 3rd
+        else {
+            if !self.contains("3") 
+                && !self.contains("sus2")
+                    && !self.contains("sus4") {
+                        val.push_str("no3");
+                    }
         }
 
         // Suspended 2th
@@ -101,6 +115,12 @@ impl Attributes {
             }
         }
 
+        // 6th
+        else if self.contains("6") {
+            //6th note
+            val.push_str("6");
+        }
+
         // 7th
         else if self.contains("7") {
             //Dominant 7th
@@ -131,7 +151,7 @@ pub struct Chord {
 impl Chord {
 
     ///Constructor from given root note and interval vec
-    pub fn new(root: &String, intervals: Vec<u8>) -> Chord {
+    pub fn new(root: &String, intervals: Vec<u8>, extended: bool) -> Chord {
 
         let mut name = String::new();
         let mut notes = vec![];
@@ -151,7 +171,11 @@ impl Chord {
         //Push attributes to name
         name.push_str(attr.resolve().as_ref());
 
-        Chord{name: name, notes: notes, extended: false}
+        if extended {
+            name.push('*');
+        }
+
+        Chord{name: name, notes: notes, extended: extended}
     }
 
     // Formats notes according to given src of notes
@@ -167,7 +191,7 @@ impl Chord {
 
 impl fmt::Display for Chord {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{0:<10} ({1:})" , 
+        write!(f, "{0:<10} ({1:})", 
                &self.name, 
                &self.notes.iter().map(|s| s.to_uppercase()).collect::<Vec<String>>().join(", "))
     }

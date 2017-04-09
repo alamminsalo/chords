@@ -51,36 +51,27 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>) -> Vec<Chord> {
 
     // Triads
     if intervals.len() > 3 {
-        chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3]]));
-
-        // Sus4
-        chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3]]));
+        chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3]], false));
+        chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3]], true));
     }
 
-    // 6th chords
+    // Triad + 1
     if intervals.len() > 4 {
-        // Triad with added 7
-        chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3], intervals[4]]));
-
-        // Sus4
-        chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3], intervals[4]]));
+        chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3], intervals[4]], false));
+        chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3], intervals[4]], true));
     }
 
-    // 7th chords
+    // Triad + 2
     if intervals.len() > 5 {
         // Triad with added 7
-        chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3], intervals[5]]));
+        chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3], intervals[5]], false));
 
         // Sus4
-        chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3], intervals[5]]));
+        chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3], intervals[5]], true));
 
         //Extended chords
-        let mut c = Chord::new(&root_str, vec![0, intervals[1], intervals[3], intervals[4], intervals[5]]);
-        c.extended = true;
-        chords.push(c);
-        let mut c = Chord::new(&root_str, vec![0, intervals[2], intervals[3], intervals[4], intervals[5]]);
-        c.extended = true;
-        chords.push(c);
+        chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3], intervals[4], intervals[5]], true));
+        chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3], intervals[4], intervals[5]], true));
     }
 
     for chord in chords.iter_mut() {
@@ -163,9 +154,10 @@ fn print_help() {
     println!("By default yelds C major scale");
     println!("Syntax: chords [--key key --scale scale]");
     println!("Optional params:");
-    println!("\t--key     Root key");
-    println!("\t--scale   Scale for notes");
-    println!("\t--help    Prints help");
+    println!("\t--key       Root key");
+    println!("\t--scale     Scale for notes");
+    println!("\t--extended  Print extended chords");
+    println!("\t--help      Prints help");
     scale::print_supported_scales();
 }
 
