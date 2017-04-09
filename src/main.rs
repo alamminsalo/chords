@@ -84,7 +84,7 @@ fn main() {
 
     ///defaults
     let mut key = String::from("C");
-    let mut scale = String::from("chromatic");
+    let mut scale = String::from("major");
 
     let mut iter = env::args();
 
@@ -135,7 +135,7 @@ fn main() {
         }
 
         //Print chords
-        println!("\nChords found:");
+        println!("Chords found:");
         for c in chords {
             println!("{}", c);
         }
@@ -149,6 +149,6 @@ fn print_help() {
     println!("--key     Root key");
     println!("--scale   Scale for notes");
     println!("--help    Prints help");
-    println!("\nBy default prints C chromatic scale");
+    println!("\nBy default yelds C major scale");
 }
 

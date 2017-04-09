@@ -158,7 +158,7 @@ impl Chord {
 
 impl fmt::Display for Chord {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}: {}" , &self.name, &self.notes.join(" "))
+        write!(f, "{} ({})" , &self.name, &self.notes.join(", "))
     }
 }
 
