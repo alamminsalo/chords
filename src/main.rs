@@ -53,7 +53,7 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>) -> Vec<Chord> {
     if intervals.len() > 3 {
         chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3]]));
 
-        // Sus2
+        // Sus4
         chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3]]));
     }
 
@@ -62,7 +62,7 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>) -> Vec<Chord> {
         // Triad with added 7
         chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3], intervals[4]]));
 
-        // Sus2
+        // Sus4
         chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3], intervals[4]]));
     }
 
@@ -71,8 +71,16 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>) -> Vec<Chord> {
         // Triad with added 7
         chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3], intervals[5]]));
 
-        // Sus2
+        // Sus4
         chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3], intervals[5]]));
+
+        //Extended chords
+        let mut c = Chord::new(&root_str, vec![0, intervals[1], intervals[3], intervals[4], intervals[5]]);
+        c.extended = true;
+        chords.push(c);
+        let mut c = Chord::new(&root_str, vec![0, intervals[2], intervals[3], intervals[4], intervals[5]]);
+        c.extended = true;
+        chords.push(c);
     }
 
     for chord in chords.iter_mut() {
@@ -88,6 +96,7 @@ fn main() {
     ///defaults
     let mut key = String::from("C");
     let mut scale = String::from("major");
+    let mut print_extended = false;
 
     let mut iter = env::args();
 
@@ -102,6 +111,10 @@ fn main() {
 
             "--scale" => {
                 scale = iter.next().unwrap().to_lowercase();
+            }
+
+            "--extended" => {
+                print_extended = true;
             }
 
             "--help" | _ => {
@@ -125,10 +138,8 @@ fn main() {
     }
 
     //Print result
-    println!("Notes in {} {} scale", &key.to_uppercase(), &scale::friendly_name(&scale));
-    for v in &notes {
-        println!("{}", &util::note_to_str(*v).to_uppercase());
-    }
+    println!("Notes in {} {} scale:", &key.to_uppercase(), &scale::friendly_name(&scale));
+    println!("{}", notes.iter().map(|&note| util::note_to_str(note).to_uppercase()).collect::<Vec<String>>().join(" "));
 
     if &scale[..] != "chromatic" {
         //Get chords in scale
@@ -140,7 +151,9 @@ fn main() {
         //Print chords
         println!("\nChords found:");
         for c in chords {
-            println!("{}", c);
+            if !c.extended || print_extended {
+                println!("{}", c);
+            }
         }
     }
 }

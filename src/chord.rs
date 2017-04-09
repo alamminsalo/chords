@@ -124,7 +124,8 @@ impl Attributes {
 
 pub struct Chord {
     name: String,
-    notes: Vec<String>
+    notes: Vec<String>,
+    pub extended: bool
 }
 
 impl Chord {
@@ -150,7 +151,7 @@ impl Chord {
         //Push attributes to name
         name.push_str(attr.resolve().as_ref());
 
-        Chord{name: name, notes: notes}
+        Chord{name: name, notes: notes, extended: false}
     }
 
     // Formats notes according to given src of notes
