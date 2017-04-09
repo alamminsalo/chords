@@ -2,7 +2,6 @@
 
 /// Formats notes for easier readability
 /// (eg. A, A# -> A, B♭)
-/// Highly´experimental
 pub fn formatted_notes(notes: Vec<(char, i8)>) -> Vec<(char, i8)> {
     let mut formatted: Vec<(char,i8)> = vec![];
 
@@ -43,15 +42,8 @@ pub fn alt_note(note: (char, i8)) -> (char, i8) {
     })
 }
 
-/// Returns scale in good readable format
-pub fn formatted_scale(scale: &str) -> String {
-    String::from(match scale {
-        "maj" | "major"  => "Major",
-        "min" | "minor"  => "Minor",
-        "hmin" | "harmonic minor"  => "Harmonic Minor",
-        "chromatic" => "Chromatic",
-        _ => scale
-    })
+pub fn alt_note_str(note: String) -> String {
+    note_to_str(alt_note(str_to_note(&note)))
 }
 
 pub fn note_to_str(note: (char, i8)) -> String {

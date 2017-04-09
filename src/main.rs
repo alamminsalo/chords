@@ -14,12 +14,11 @@ fn get_notes(keystr: &str, scalestr: &str) -> Vec<(char, i8)> {
 
     ///Return notes filtered by scale
     let scale = scale::get_scale(scalestr);
-    let notes = chromatic_notes.into_iter().enumerate()
+
+    chromatic_notes.into_iter().enumerate()
         .filter(|&(index, _)| scale.contains(&(index as u8)))
         .map(|(_, e)| e)
-        .collect();
-
-    notes
+        .collect()
 }
 
 //Returns list of chords a given rootnote can create with given list of notes
@@ -76,6 +75,10 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>) -> Vec<Chord> {
         chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3], intervals[5]]));
     }
 
+    for chord in chords.iter_mut() {
+        chord.format_notes(notes);
+    }
+
     //Return chords
     chords
 }
@@ -122,9 +125,9 @@ fn main() {
     }
 
     //Print result
-    println!("Notes in {} {} scale", &key.to_uppercase(), &util::formatted_scale(&scale));
+    println!("Notes in {} {} scale", &key.to_uppercase(), &scale::friendly_name(&scale));
     for v in &notes {
-        println!("{}", &util::note_to_str(*v));
+        println!("{}", &util::note_to_str(*v).to_uppercase());
     }
 
     if &scale[..] != "chromatic" {
@@ -135,7 +138,7 @@ fn main() {
         }
 
         //Print chords
-        println!("Chords found:");
+        println!("\nChords found:");
         for c in chords {
             println!("{}", c);
         }
@@ -144,11 +147,12 @@ fn main() {
 
 fn print_help() {
     println!("Chords: scales and chordwork utility written in Rust language");
-    println!("Syntax: chords [--key key --scale scale]\n");
+    println!("By default yelds C major scale");
+    println!("Syntax: chords [--key key --scale scale]");
     println!("Optional params:");
-    println!("--key     Root key");
-    println!("--scale   Scale for notes");
-    println!("--help    Prints help");
-    println!("\nBy default yelds C major scale");
+    println!("\t--key     Root key");
+    println!("\t--scale   Scale for notes");
+    println!("\t--help    Prints help");
+    scale::print_supported_scales();
 }
 

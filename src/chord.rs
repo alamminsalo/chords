@@ -33,11 +33,6 @@ fn stringify_interval(interval: u8) -> String {
     })
 }
 
-pub struct Chord {
-    name: String,
-    notes: Vec<String>
-}
-
 pub struct Attributes {
     attr: Vec<String>
 }
@@ -127,6 +122,11 @@ impl Attributes {
     }
 }
 
+pub struct Chord {
+    name: String,
+    notes: Vec<String>
+}
+
 impl Chord {
 
     ///Constructor from given root note and interval vec
@@ -143,9 +143,7 @@ impl Chord {
 
         //Pick notes from chromatic scale according to interval values
         for interval in intervals.iter() {
-            let note = chromatic[*interval as usize];
-            notes.push(util::note_to_str(note));
-
+            notes.push(util::note_to_str(chromatic[*interval as usize]));
             attr.push(stringify_interval(*interval as u8));
         }
 
@@ -154,16 +152,21 @@ impl Chord {
 
         Chord{name: name, notes: notes}
     }
+
+    // Formats notes according to given src of notes
+    pub fn format_notes(&mut self, src: &Vec<(char,i8)>) {
+        let strings = src.iter().map(|&note| util::note_to_str(note)).collect::<Vec<String>>();
+        for el in self.notes.iter_mut(){
+            if !strings.contains(el) {
+                *el = util::alt_note_str(el.clone());
+            }
+        }
+    }
 }
 
 impl fmt::Display for Chord {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} ({})" , &self.name, &self.notes.join(", "))
+        write!(f, "{} \t({})" , &self.name, &self.notes.join(", "))
     }
-}
-
-#[test]
-fn chord_test() {
-    println!("{}", Chord::new("C".to_string(), vec![0,2,8,11]));
 }
 

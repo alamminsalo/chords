@@ -30,69 +30,49 @@ pub fn chromatic_notes(root: (char, i8)) -> Vec<(char, i8)> {
     v
 }
 
-/// Returns scale intervals
-pub fn get_scale(scale: &str) -> Vec<u8> {
-    interval_to_scale(match scale {
-        "maj" | "major"             => major_interval(),
-        "min" | "minor"             => minor_interval(),
-        "hmin" | "harmonic minor"   => harmonic_minor_interval(),
-        "chromatic" | _             => chromatic_interval()
+pub fn print_supported_scales() {
+    println!("Supported scales:");
+    println!("\tchromatic");
+    println!("\tmajor");
+    println!("\tminor");
+    println!("\tharmonicminor");
+    println!("\twholetone");
+}
+
+/// Returns scales by name
+pub fn get_scale(name: &str) -> Vec<u8> {
+    vec_sum(match name {
+        "maj" | "major"                     => vec![2,2,1,2,2,2,1],
+        "min" | "minor" | "naturalminor"    => vec![2,1,2,2,1,2,2],
+        "hmin" | "harmonicminor"            => vec![2,1,2,2,1,3,1],
+        "augmented"                         => vec![1,3,1,3,1],
+        "wholetone"                         => vec![2,2,2,2,2,2],
+        "melodicminor"                      => vec![2,1,2,2,2,2],
+        "overtone"                          => vec![2,2,2,1,2,1],
+        "chromatic" | _                     => vec![1,1,1,1,1,1,1,1,1,1,1,1]
     })
 }
 
-#[test]
-fn test_scale() {
-//
-//    println!("\nMajor scale:");
-//    for v in get_scale("maj") {
-//        println!("{}", v);
-//    }
-//
-//    println!("\nMinor scale:");
-//    for v in get_scale("min") {
-//        println!("{}", v);
-//    }
-//
-//    println!("\nHarmonic minor scale:");
-//    for v in get_scale("hmin") {
-//        println!("{}", v);
-//    }
-//
-//    println!("\nChromatic scale:");
-//    for v in get_scale("chromatic") {
-//        println!("{}", v);
-//    }
+/// Returns array of summed items
+fn vec_sum(interval: Vec<u8>) -> Vec<u8> {
+    let mut vec: Vec<u8> = vec![0];
+    vec.extend(interval.into_iter().scan(0, |sum, step| {
+        *sum = *sum + step; 
+        Some(*sum)
+    }));
+    vec
 }
 
-/// Normalizes interval to indexes in chromatic scale
-fn interval_to_scale(interval: Vec<u8>) -> Vec<u8> {
-    let mut v = vec![];
-
-    //Add root note
-    v.push(0);
-
-    let mut index = 0;
-    for i in interval {
-        index += i;
-        v.push(index);
-    }
-
-    v
+pub fn friendly_name(name: &str) -> String {
+    String::from(match name {
+        "maj" | "major"                     => "Major",
+        "min" | "minor" | "naturalminor"    => "Natural minor",
+        "hmin" | "harmonicminor"            => "Harmonic minor",
+        "augmented"                         => "Augmented",
+        "wholetone"                         => "Wholetone",
+        "melodicminor"                      => "Melodic minor",
+        "overtone"                          => "Overtone",
+        "chromatic"                         => "Chromatic",
+        _                                   => ""
+    })
 }
-
-fn chromatic_interval() -> Vec<u8> {
-    vec![1,1,1,1,1,1,1,1,1,1,1,1]
-}
-
-fn major_interval() -> Vec<u8> {
-    vec![2,2,1,2,2,2,1]
-}
-
-fn minor_interval() -> Vec<u8> {
-    vec![2,1,2,2,1,2,2]
-}
-
-fn harmonic_minor_interval() -> Vec<u8> {
-    vec![2,1,2,2,1,3,1]
-}
-
