@@ -167,7 +167,9 @@ impl Chord {
 
 impl fmt::Display for Chord {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} \t({})" , &self.name, &self.notes.join(", "))
+        write!(f, "{0:<10} ({1:})" , 
+               &self.name, 
+               &self.notes.iter().map(|s| s.to_uppercase()).collect::<Vec<String>>().join(", "))
     }
 }
 
