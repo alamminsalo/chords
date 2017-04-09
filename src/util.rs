@@ -22,7 +22,7 @@ pub fn formatted_notes(notes: Vec<(char, i8)>) -> Vec<(char, i8)> {
 
 /// Returns alt note
 /// (eg. A# -> B♭)
-fn alt_note(note: (char, i8)) -> (char, i8) {
+pub fn alt_note(note: (char, i8)) -> (char, i8) {
     let notestr = note_to_str(note);
     str_to_note(match &notestr[..] {
         "a#" => "b♭",
@@ -38,6 +38,7 @@ fn alt_note(note: (char, i8)) -> (char, i8) {
         "f#" => "g♭",
         "g♭" => "f#",
         "g#" => "a♭",
+        "a♭" => "g#",
         _ => &notestr
     })
 }

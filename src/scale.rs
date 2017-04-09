@@ -1,3 +1,4 @@
+use util;
 
 /// Returns all notes on chromatic scale
 pub fn chromatic_notes(root: (char, i8)) -> Vec<(char, i8)> {
@@ -17,7 +18,7 @@ pub fn chromatic_notes(root: (char, i8)) -> Vec<(char, i8)> {
     v.push(('g', 1));   /// g sharp
 
     ///Split and join according to root note
-    let root_index = v.iter().position(|&note| note == root).unwrap();
+    let root_index = v.iter().position(|&note| note == root || note == util::alt_note(root)).unwrap();
     let a = v[..root_index].to_vec();
     let b = v[root_index..].to_vec();
 

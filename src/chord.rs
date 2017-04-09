@@ -22,6 +22,9 @@ fn stringify_interval(interval: u8) -> String {
         7 => "",        //Major 5th
         8 => "Aug",     //Augmented 5th
 
+        /// 6th
+        9 => "6",
+
         /// 7th
         10 => "7",      //Dominant 7th
         11 => "maj7",   //Major 7th
@@ -35,55 +38,99 @@ pub struct Chord {
     notes: Vec<String>
 }
 
-fn attr_contains(attr: &Vec<String>, key: &str) -> bool {
-    let s = key.to_string();
-    attr.contains(&s)
+pub struct Attributes {
+    attr: Vec<String>
 }
 
-fn resolve_attributes(attr: Vec<String>) -> String {
-    let mut val = String::new();
-
-    // Suspended 2th and 4th
-    if attr_contains(&attr, "sus2") {
-        val.push_str("sus2");
+impl Attributes {
+    fn push(&mut self, s: String) {
+        self.attr.push(s);
     }
+    //Resolve attributes to chord name
+    fn resolve(&self) -> String {
 
-    if attr_contains(&attr, "sus4") {
-        val.push_str("sus4");
-    }
+        let mut val = String::new();
 
-    // 3rd and 5th
-    if attr_contains(&attr, "m") 
-        && attr_contains(&attr, "Dim5") {
-            //Dim chord
-            val.push_str("dim");
+        // 3rd and 5th
+        if self.contains("m") {
+            if self.contains("Dim5") {
+                //Dim chord
+                val.push_str("dim");
+            }
+            else {
+                //Minor chord
+                val.push_str("m");
+            }
         }
-    else if attr_contains(&attr, "m") {
-        //Minor chord
-        val.push_str("m");
-    }
-    else if attr_contains(&attr, "Aug") {
-        //Augmented triad
-        val.push_str("aug");
+        
+        if self.contains("Aug") {
+            //Augmented triad
+            val.push_str("aug");
+        }
+
+        // 6th
+        if self.contains("6") {
+            //6th note
+            val.push_str("6");
+        }
+
+        // Suspended 2th
+        if self.contains("sus2") {
+            if self.contains("7") {
+                // 9th chord
+                val.push_str("9");
+            }
+            else if self.contains("maj7") {
+                //Dominant 9th
+                val.push_str("M9");
+            }
+            else {
+                //sus2
+                val.push_str("sus2");
+            }
+        }
+
+        // Suspended 4th
+        else if self.contains("sus4") {
+            if self.contains("7") {
+                //Dominant 11th
+                val.push_str("11");
+            }
+            else if self.contains("maj7") {
+                //Major 11
+                val.push_str("M11");
+            }
+            else {
+                //Sus4
+                val.push_str("sus4");
+            }
+        }
+
+        // 7th
+        else if self.contains("7") {
+            //Dominant 7th
+            val.push_str("7");
+        }
+        else if self.contains("maj7") {
+            //Dominant 7th
+            val.push_str("M7");
+        }
+
+
+        //Return finished string value
+        val
     }
 
-    // 7th
-    if attr_contains(&attr, "7") {
-        //Dominant 7th
-        val.push_str("7");
+    fn contains(&self, key: &str) -> bool {
+        let s = key.to_string();
+        self.attr.contains(&s)
     }
-    else if attr_contains(&attr, "maj7") {
-        //Dominant 7th
-        val.push_str("M7");
-    }
-
-    val
 }
 
 impl Chord {
 
     ///Constructor from given root note and interval vec
-    pub fn new(root: String, intervals: Vec<u8>) -> Chord {
+    pub fn new(root: &String, intervals: Vec<u8>) -> Chord {
 
         let mut name = String::new();
         let mut notes = vec![];
@@ -92,7 +139,7 @@ impl Chord {
 
         let root_note = util::str_to_note(&root);
         let chromatic = scale::chromatic_notes(root_note);
-        let mut attr: Vec<String> = vec![];
+        let mut attr = Attributes{attr: vec![]};
 
         //Pick notes from chromatic scale according to interval values
         for interval in intervals.iter() {
@@ -103,7 +150,7 @@ impl Chord {
         }
 
         //Push attributes to name
-        name.push_str(resolve_attributes(attr).as_ref());
+        name.push_str(attr.resolve().as_ref());
 
         Chord{name: name, notes: notes}
     }
@@ -111,7 +158,7 @@ impl Chord {
 
 impl fmt::Display for Chord {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} : {}" , &self.name, &self.notes.join(" "))
+        write!(f, "{}: {}" , &self.name, &self.notes.join(" "))
     }
 }
 

@@ -24,10 +24,15 @@ fn get_notes(keystr: &str, scalestr: &str) -> Vec<(char, i8)> {
 
 //Returns list of chords a given rootnote can create with given list of notes
 fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>) -> Vec<Chord> {
-    let chords = vec![];
+    let mut chords = vec![];
+
+    //Root note as string presentation
+    let root_str = util::note_to_str(root_note);
 
     //Flip vec to root note
-    let root_index = notes.iter().position(|&note| note == root_note).unwrap();
+    let root_index = notes.iter().position(|&note| note == root_note)
+        .expect("Failed to find root index!");
+
     let a = notes[..root_index].to_vec();
     let b = notes[root_index..].to_vec();
 
@@ -39,15 +44,39 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>) -> Vec<Chord> {
     let mut intervals = vec![];
 
     for v in &flipped[1..] {
-        let interval = chromatic_notes.iter().position(|&note| note == *v).unwrap();
+        let interval = chromatic_notes.iter()
+            .position(|&note| note == *v || note == util::alt_note(*v))
+            .expect("Failed to find interval position for note");
         intervals.push(interval as u8);
     }
 
-    // Triad
-    let chord = Chord::new(util::note_to_str(root_note), vec![0, intervals[1], intervals[3]]);
-    println!("{}",chord);
-    
-    // 7th
+    // Triads
+    if intervals.len() > 3 {
+        chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3]]));
+
+        // Sus2
+        chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3]]));
+    }
+
+    // 6th chords
+    if intervals.len() > 4 {
+        // Triad with added 7
+        chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3], intervals[4]]));
+
+        // Sus2
+        chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3], intervals[4]]));
+    }
+
+    // 7th chords
+    if intervals.len() > 5 {
+        // Triad with added 7
+        chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3], intervals[5]]));
+
+        // Sus2
+        chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3], intervals[5]]));
+    }
+
+    //Return chords
     chords
 }
 
@@ -55,7 +84,7 @@ fn main() {
 
     ///defaults
     let mut key = String::from("C");
-    let mut scale = String::from("maj");
+    let mut scale = String::from("chromatic");
 
     let mut iter = env::args();
 
@@ -98,12 +127,19 @@ fn main() {
         println!("{}", &util::note_to_str(*v));
     }
 
-    //Print chords
-    println!("\nChords found:");
-    for v in &notes {
-        get_chords(*v, &notes);
-    }
+    if &scale[..] != "chromatic" {
+        //Get chords in scale
+        let mut chords = vec![];
+        for v in &notes {
+            chords.extend(get_chords(*v, &notes));
+        }
 
+        //Print chords
+        println!("\nChords found:");
+        for c in chords {
+            println!("{}", c);
+        }
+    }
 }
 
 fn print_help() {
