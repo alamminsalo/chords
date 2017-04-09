@@ -45,7 +45,7 @@ impl Attributes {
     fn resolve(&self) -> String {
         let mut val = String::new();
 
-        ///TODO: better logic
+        //TODO: better logic
 
         // 3rd and 5th
         if self.contains("b3") {
