@@ -41,11 +41,10 @@ impl Attributes {
     fn push(&mut self, s: String) {
         self.attr.push(s);
     }
-    //Resolve attributes to chord name
-    fn resolve(&self) -> String {
-        let mut val = String::new();
 
-        //TODO: better logic
+    //Resolve attributes to chord name
+    fn resolve(&mut self) -> String {
+        let mut val = String::new();
 
         // 3rd and 5th
         if self.contains("b3") {
@@ -59,79 +58,126 @@ impl Attributes {
             }
         }
 
+        else if !self.contains("3") {
+            //Check sus2, sus4
+            if self.contains("sus2") {
+                val.push_str("sus2");
+            }
+            else if self.contains("sus4") {
+                val.push_str("sus4");
+            }
+
+            //no3
+            else {
+                self.push("no3".to_string());
+            }
+        }
+
         //Aug check
-        else if self.contains("aug") {
+        if self.contains("aug") {
             //Augmented triad
             val.push_str("aug");
         }
 
         //Flat 5
         else if self.contains("b5") {
-            val.push_str("b5");
+            if !self.contains("b3") {
+                val.push_str("b5");
+            }
         }
 
-        // no5 
-        else if !self.contains("5") {
-            val.push_str("no5");
+        // 5 
+        else if self.contains("5") {
+            if self.contains("no3") {
+                val.push_str("5");
+            }
         }
 
-        // No 3rd
+        // no5
         else {
-            if !self.contains("3") 
-                && !self.contains("sus2")
-                    && !self.contains("sus4") {
-                        val.push_str("no3");
+            self.push("no5".to_string());
+        }
+
+        if self.contains("no3") && self.contains("no5") {
+            // something happened...
+            panic!("no3 no5 chord happened...");
+        }
+
+        if self.contains("3") || self.contains("m3") {
+            // triad, try 7th stacks
+
+            // Try 9th
+            if self.contains("sus2") {
+                if self.contains("7") {
+                    // 9th
+                    self.push("9".to_string());
+                }
+
+                // Try 11th
+                if self.contains("sus4") {
+                    if self.contains("9") {
+                        // 11th
+                        self.push("11".to_string());
+
+                        // Try 13th
+                        if self.contains("6") {
+                            self.push("13".to_string());
+                        }
                     }
-        }
-
-        // Suspended 2th
-        if self.contains("sus2") {
-            if self.contains("7") {
-                // 9th chord
-                val.push_str("9");
-            }
-            else if self.contains("maj7") {
-                //Dominant 9th
-                val.push_str("M9");
-            }
-            else {
-                //sus2
-                val.push_str("sus2");
+                }
             }
         }
 
-        // Suspended 4th
-        else if self.contains("sus4") {
-            if self.contains("7") {
-                //Dominant 11th
-                val.push_str("11");
-            }
-            else if self.contains("maj7") {
-                //Major 11
-                val.push_str("M11");
-            }
-            else {
-                //Sus4
-                val.push_str("sus4");
-            }
+        let mut suffix = String::new();
+        if val.len() > 3 {
+            suffix.push_str("/");
         }
 
-        // 6th
-        else if self.contains("6") {
-            //6th note
-            val.push_str("6");
+        if self.contains("maj7") {
+            //Add prefix 'maj'
+            suffix.push_str("maj");
         }
 
-        // 7th
+        if self.contains("13") {
+            suffix.push_str("13");
+        }
+        else if self.contains("11") {
+            suffix.push_str("11");
+        }
+        else if self.contains("9") {
+            suffix.push_str("9");
+        }
         else if self.contains("7") {
-            //Dominant 7th
-            val.push_str("7");
+            suffix.push_str("7");
         }
         else if self.contains("maj7") {
-            //Dominant 7th
-            val.push_str("M7");
+            suffix.clear();
+            suffix.push_str("maj7");
+        }
+        else {
+            //Clear suffix
+            suffix = String::new();
         }
 
+        if self.contains("6") {
+            if suffix.len() > 0 || val.len() > 3 {
+                // check add6
+                suffix.push_str("add6");
+            }
+            else {
+                suffix.push_str("6");
+            }
+        }
+
+        val.push_str(suffix.as_ref());
+
+        // no3, no5
+        if self.contains("no3") {
+            val.push_str("no3");
+        }
+        if self.contains("no5") {
+            val.push_str("no5");
+        }
 
         //Return finished string value
         val
@@ -192,7 +238,7 @@ impl Chord {
 
 impl fmt::Display for Chord {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{0:<10} ({1:})", 
+        write!(f, "{0:<18} ({1:})", 
                &self.name, 
                &self.notes.iter().map(|s| s.to_uppercase()).collect::<Vec<String>>().join(", "))
     }
