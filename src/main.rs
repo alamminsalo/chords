@@ -174,7 +174,7 @@ fn print_help() {
     println!("Optional params:");
     println!("\t--key       Root key");
     println!("\t--scale     Scale for notes");
-    println!("\t--extended  Print extended chords");
+    println!("\t--extended  Print extended chords (marked with *)");
     println!("\t--help      Prints help");
     scale::print_supported_scales();
 }

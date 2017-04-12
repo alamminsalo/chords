@@ -32,11 +32,20 @@ pub fn chromatic_notes(root: (char, i8)) -> Vec<(char, i8)> {
 
 pub fn print_supported_scales() {
     println!("Supported scales:");
-    println!("\tchromatic");
     println!("\tmajor");
     println!("\tminor");
     println!("\tharmonicminor");
+    println!("\tmelodicminor");
+    println!("\tchromatic");
+    println!("\tovertone");
     println!("\twholetone");
+    println!("\tdorian");
+    println!("\tphyrgian");
+    println!("\tlydian");
+    println!("\taeolian");
+    println!("\tlocrian");
+    println!("\taugmented");
+    println!("Custom scale syntax: --scale 1,2,1,3,2,1");
 }
 
 /// Returns scales by name
