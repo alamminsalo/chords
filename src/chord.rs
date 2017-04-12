@@ -2,197 +2,11 @@ use std::fmt;
 
 use util;
 use scale;
-
-/// Returns string evaluation from given interval in a chord
-fn stringify_interval(interval: u8) -> String {
-    String::from(match interval {
-
-        /// 2nd
-        2 => "sus2",
-
-        /// 3rd
-        3 => "b3",   // Minor 3rd 
-        4 => "3",    // Major 3rd
-
-        /// 4th
-        5 => "sus4",
-
-        /// 5th
-        6 => "b5",  //Diminished 5th
-        7 => "5",        //Major 5th
-        8 => "aug",     //Augmented 5th
-
-        /// 6th
-        9 => "6",
-
-        /// 7th
-        10 => "7",      //Dominant 7th
-        11 => "maj7",   //Major 7th
-
-        _ => ""
-    })
-}
-
-pub struct Attributes {
-    attr: Vec<String>
-}
-
-impl Attributes {
-    fn push(&mut self, s: String) {
-        self.attr.push(s);
-    }
-
-    //Resolve attributes to chord name
-    fn resolve(&mut self) -> String {
-        let mut val = String::new();
-
-        // 3rd and 5th
-        if self.contains("b3") {
-            if self.contains("b5") {
-                //Dim chord
-                val.push_str("dim");
-            }
-            else {
-                //Minor chord
-                val.push_str("m");
-            }
-        }
-
-        else if !self.contains("3") {
-            //Check sus2, sus4
-            if self.contains("sus2") {
-                val.push_str("sus2");
-            }
-            else if self.contains("sus4") {
-                val.push_str("sus4");
-            }
-
-            //no3
-            else {
-                self.push("no3".to_string());
-            }
-        }
-
-        //Aug check
-        if self.contains("aug") {
-            //Augmented triad
-            val.push_str("aug");
-        }
-
-        //Flat 5
-        else if self.contains("b5") {
-            if !self.contains("b3") {
-                val.push_str("b5");
-            }
-        }
-
-        // 5 
-        else if self.contains("5") {
-            if self.contains("no3") {
-                val.push_str("5");
-            }
-        }
-
-        // no5
-        else {
-            self.push("no5".to_string());
-        }
-
-        if self.contains("no3") && self.contains("no5") {
-            // something happened...
-            panic!("no3 no5 chord happened...");
-        }
-
-        if self.contains("3") || self.contains("m3") {
-            // triad, try 7th stacks
-
-            // Try 9th
-            if self.contains("sus2") {
-                if self.contains("7") {
-                    // 9th
-                    self.push("9".to_string());
-                }
-
-                // Try 11th
-                if self.contains("sus4") {
-                    if self.contains("9") {
-                        // 11th
-                        self.push("11".to_string());
-
-                        // Try 13th
-                        if self.contains("6") {
-                            self.push("13".to_string());
-                        }
-                    }
-                }
-            }
-        }
-
-        let mut suffix = String::new();
-        if val.len() > 3 {
-            suffix.push_str("/");
-        }
-
-        if self.contains("maj7") {
-            //Add prefix 'maj'
-            suffix.push_str("maj");
-        }
-
-        if self.contains("13") {
-            suffix.push_str("13");
-        }
-        else if self.contains("11") {
-            suffix.push_str("11");
-        }
-        else if self.contains("9") {
-            suffix.push_str("9");
-        }
-        else if self.contains("7") {
-            suffix.push_str("7");
-        }
-        else if self.contains("maj7") {
-            suffix.clear();
-            suffix.push_str("maj7");
-        }
-        else {
-            //Clear suffix
-            suffix = String::new();
-        }
-
-        if self.contains("6") {
-            if suffix.len() > 0 || val.len() > 3 {
-                // check add6
-                suffix.push_str("add6");
-            }
-            else {
-                suffix.push_str("6");
-            }
-        }
-
-        val.push_str(suffix.as_ref());
-
-        // no3, no5
-        if self.contains("no3") {
-            val.push_str("no3");
-        }
-        if self.contains("no5") {
-            val.push_str("no5");
-        }
-
-        //Return finished string value
-        val
-    }
-
-    fn contains(&self, key: &str) -> bool {
-        let s = key.to_string();
-        self.attr.contains(&s)
-    }
-}
+use attribute::Attributes;
 
 pub struct Chord {
     name: String,
-    notes: Vec<String>,
-    pub extended: bool
+    notes: Vec<String>
 }
 
 impl Chord {
@@ -207,12 +21,12 @@ impl Chord {
 
         let root_note = util::str_to_note(&root);
         let chromatic = scale::chromatic_notes(root_note);
-        let mut attr = Attributes{attr: vec![]};
+        let mut attr = Attributes::new();
 
         //Pick notes from chromatic scale according to interval values
         for interval in intervals.iter() {
             notes.push(util::note_to_str(chromatic[*interval as usize]));
-            attr.push(stringify_interval(*interval as u8));
+            attr.push_interval(*interval as u8);
         }
 
         //Push attributes to name
@@ -222,7 +36,7 @@ impl Chord {
             name.push('*');
         }
 
-        Chord{name: name, notes: notes, extended: extended}
+        Chord{name: name, notes: notes}
     }
 
     // Formats notes according to given src of notes

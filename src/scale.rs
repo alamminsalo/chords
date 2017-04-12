@@ -40,17 +40,29 @@ pub fn print_supported_scales() {
 }
 
 /// Returns scales by name
-pub fn get_scale(name: &str) -> Vec<u8> {
-    vec_sum(match name {
-        "maj" | "major"                     => vec![2,2,1,2,2,2,1],
-        "min" | "minor" | "naturalminor"    => vec![2,1,2,2,1,2,2],
-        "hmin" | "harmonicminor"            => vec![2,1,2,2,1,3,1],
-        "augmented"                         => vec![1,3,1,3,1],
-        "wholetone"                         => vec![2,2,2,2,2,2],
-        "melodicminor"                      => vec![2,1,2,2,2,2],
-        "overtone"                          => vec![2,2,2,1,2,1],
-        "chromatic" | _                     => vec![1,1,1,1,1,1,1,1,1,1,1,1]
+pub fn get_scale(scale: &str) -> Vec<u8> {
+    vec_sum(match scale {
+        "major" | "ionian"                      => vec![2,2,1,2,2,2,1],
+        "minor" | "naturalminor" | "aeolian"    => vec![2,1,2,2,1,2,2],
+        "harmonicminor"                         => vec![2,1,2,2,1,3,1],
+        "melodicminor"                          => vec![2,1,2,2,2,2],
+        "dorian"                                => vec![2,1,2,2,2,1,2],
+        "phyrgian"                              => vec![2,2,2,1,2,2,1],
+        "lydian"                                => vec![2,2,2,1,2,2,1],
+        "locrian"                               => vec![1,2,2,1,2,2,2],
+        "mixolydian"                            => vec![2,2,1,2,2,1,2],
+        "overtone"                              => vec![2,2,2,1,2,1],
+        "augmented"                             => vec![1,3,1,3,1],
+        "wholetone"                             => vec![2,2,2,2,2,2],
+        "chromatic"                             => vec![1,1,1,1,1,1,1,1,1,1,1,1],
+        _                                       => parse_scale(scale)
     })
+}
+
+// Parses scale from "1,1,..." format
+fn parse_scale(scalestr: &str) -> Vec<u8> {
+    println!("Using custom scale: {}", scalestr);
+    scalestr.split(",").map(|s| s.parse::<u8>().unwrap_or(1)).collect()
 }
 
 /// Returns array of summed items
