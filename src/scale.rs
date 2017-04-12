@@ -61,7 +61,6 @@ pub fn get_scale(scale: &str) -> Vec<u8> {
 
 // Parses scale from "1,1,..." format
 fn parse_scale(scalestr: &str) -> Vec<u8> {
-    println!("Using custom scale: {}", scalestr);
     scalestr.split(",").map(|s| s.parse::<u8>().unwrap_or(1)).collect()
 }
 
@@ -77,14 +76,14 @@ fn vec_sum(interval: Vec<u8>) -> Vec<u8> {
 
 pub fn friendly_name(name: &str) -> String {
     String::from(match name {
-        "maj" | "major"                     => "Major",
-        "min" | "minor" | "naturalminor"    => "Natural minor",
+        "major"                     => "Major",
+        "minor" | "naturalminor"    => "Natural minor",
         "hmin" | "harmonicminor"            => "Harmonic minor",
         "augmented"                         => "Augmented",
         "wholetone"                         => "Wholetone",
         "melodicminor"                      => "Melodic minor",
         "overtone"                          => "Overtone",
         "chromatic"                         => "Chromatic",
-        _                                   => ""
+        _                                   => name
     })
 }

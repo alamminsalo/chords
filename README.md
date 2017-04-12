@@ -2,7 +2,8 @@
 
 Utility for scale and chords exploration
 
-[![asciicast](https://asciinema.org/a/112240.png)](https://asciinema.org/a/112240?autoplay=1)
+## Asciicast
+[![asciicast](https://asciinema.org/a/112916.png)](https://asciinema.org/a/112916?autoplay=1)
 
 ## Todo
 
