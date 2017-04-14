@@ -1,4 +1,4 @@
-use util;
+use chords::util;
 
 /// Returns all notes on chromatic scale
 pub fn chromatic_notes(root: (char, i8)) -> Vec<(char, i8)> {

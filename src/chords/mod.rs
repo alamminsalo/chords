@@ -3,7 +3,7 @@ mod util;
 mod chord;
 mod attribute;
 
-use chord::Chord;
+use self::chord::Chord;
 
 /// Returns notes in a given key and scale
 fn get_notes(keystr: &str, scalestr: &str) -> Vec<(char, i8)> {
@@ -100,7 +100,7 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>, extended: bool) ->
     chords
 }
 
-fn analyze(key: &str, scale: &str, extended: bool) -> (Vec<String>,Vec<Chord>,String) {
+pub fn analyze(key: &str, scale: &str, extended: bool) -> (Vec<String>,Vec<Chord>) {
     //Notes in scale
     let mut notes = get_notes(&key, &scale);
 
@@ -119,5 +119,13 @@ fn analyze(key: &str, scale: &str, extended: bool) -> (Vec<String>,Vec<Chord>,St
     }
 
     //Return values
-    (notes.into_iter().map(|note| util::note_to_str(note).to_uppercase()).collect::<Vec<String>>(), chords, scale::friendly_name(scale))
+    (notes.into_iter().map(|note| util::note_to_str(note).to_uppercase()).collect::<Vec<String>>(), chords)
+}
+
+pub fn print_supported_scales() {
+    scale::print_supported_scales();
+}
+
+pub fn scale_friendly_name(scale: &str) -> String {
+    scale::friendly_name(scale)
 }

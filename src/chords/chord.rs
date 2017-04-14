@@ -1,8 +1,8 @@
 use std::fmt;
 
-use util;
-use scale;
-use attribute::Attributes;
+use chords::util;
+use chords::scale;
+use chords::attribute::Attributes;
 
 pub struct Chord {
     name: String,
