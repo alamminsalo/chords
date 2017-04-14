@@ -5,8 +5,8 @@ use scale;
 use attribute::Attributes;
 
 pub struct Chord {
-    name: String,
-    notes: Vec<String>
+    pub name: String,
+    pub notes: Vec<String>
 }
 
 impl Chord {
