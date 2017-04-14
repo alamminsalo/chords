@@ -6,7 +6,6 @@ description = "library for getting chords from scale"
 repository="https://github.com/alamminsalo/chords"
 keywords = ["notation", "music", "chords", "scales"]
 license = "MIT"
-exclude = ["target/debug"]
 
 [lib]
 name = "chords"
