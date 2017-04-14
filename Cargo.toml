@@ -12,6 +12,6 @@ name = "chords"
 path = "src/lib.rs"
 
 [[bin]]
-name = "chords-bin"
+name = "chords"
 path = "src/main.rs"
 
