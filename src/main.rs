@@ -102,6 +102,28 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>, extended: bool) ->
     chords
 }
 
+fn analyze(key: &str, scale: &str, extended: bool) -> (Vec<String>,Vec<Chord>) {
+    //Notes in scale
+    let mut notes = get_notes(&key, &scale);
+
+    //Format notes for readability
+    match scale {
+        "chromatic" => {},
+        _ => notes = util::formatted_notes(notes)
+    }
+
+    //Chords in scale
+    let mut chords: Vec<Chord> = vec![]; 
+    if scale != "chromatic" {
+        for v in &notes {
+            chords.extend(get_chords(*v, &notes, extended));
+        }
+    }
+
+    //Return values
+    (notes.into_iter().map(|note| util::note_to_str(note).to_uppercase()).collect::<Vec<String>>(), chords)
+}
+
 fn main() {
 
     ///defaults
@@ -135,35 +157,15 @@ fn main() {
         }
     }
 
-    let mut notes = get_notes(&key, &scale);
+    // Run analysis
+    let (notes, chords) = analyze(&key, &scale, extended);
 
-    //Format notes for readability
-    match &scale[..] {
-        "chromatic" => { 
-            //Do nothing on chromatic
-        }
-
-        _ => {
-            notes = util::formatted_notes(notes)
-        }
-    }
-
-    //Print result
+    //Print results
     println!("Notes in {} {} scale:", &key.to_uppercase(), &scale::friendly_name(&scale));
-    println!("{}", notes.iter().map(|&note| util::note_to_str(note).to_uppercase()).collect::<Vec<String>>().join(" "));
-
-    if &scale[..] != "chromatic" {
-        //Get chords in scale
-        let mut chords = vec![];
-        for v in &notes {
-            chords.extend(get_chords(*v, &notes, extended));
-        }
-
-        //Print chords
-        println!("\nChords found:");
-        for c in chords {
-            println!("{}", c);
-        }
+    println!("{}\n", notes.join(" "));
+    println!("Chords found:");
+    for c in chords {
+        println!("{}", c);
     }
 }
 

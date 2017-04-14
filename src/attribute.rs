@@ -81,7 +81,7 @@ impl Attributes {
 
             // adds
             if self.has(&[2]) {
-                if added == true {
+                if added {
                     val.push_str(",9");
                 } else {
                     val.push_str("add9");
@@ -90,7 +90,7 @@ impl Attributes {
             }
 
             else if self.has(&[5]) {
-                if added == true {
+                if added {
                     val.push_str(",11");
                 }
                 else {
@@ -136,7 +136,7 @@ impl Attributes {
             // 6
             if &val != "dim" && self.has(&[7,9]) {
                 val.push_str("6");
-                self.remove(6);
+                self.remove(9);
             }
         }
 
@@ -167,9 +167,13 @@ impl Attributes {
         let nth = self.resolve_nth();
         if nth.len() > 0 {
             if val.len() > 0 && &val != "m" && &val != "dim" {
-                val.push_str("+");
+                val.push_str("(");
+                val.push_str(nth.as_ref());
+                val.push_str(")");
             }
-            val.push_str(nth.as_ref());
+            else {
+                val.push_str(nth.as_ref());
+            }
         }
 
 
