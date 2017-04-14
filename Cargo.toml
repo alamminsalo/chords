@@ -5,6 +5,7 @@ authors = ["antti l"]
 description = "library for getting chords from scale"
 repository="https://github.com/alamminsalo/chords"
 keywords = ["notation", "music", "chords", "scales"]
+license = "MIT"
 
 [lib]
 name = "chords"
