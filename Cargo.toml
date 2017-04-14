@@ -1,6 +1,6 @@
 [package]
 name = "chords"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["antti l"]
 description = "library for getting chords from scale"
 repository="https://github.com/alamminsalo/chords"

@@ -39,7 +39,7 @@ fn main() {
     let (notes, chords) = chords::analyze(&key, &scale, extended);
 
     //Print results
-    println!("Notes in {} {} scale:", &key.to_uppercase(), &chords::scale_friendly_name(&scale));
+    println!("Notes in {} {} scale:", &key.to_uppercase(), &chords::scale::friendly_name(&scale));
     println!("{}\n", notes.join(" "));
     println!("Chords found:");
     for c in chords {
@@ -56,6 +56,6 @@ fn print_help() {
     println!("\t--scale     Scale for notes");
     println!("\t--extended  Print extended chords (marked with *)");
     println!("\t--help      Prints help");
-    chords::print_supported_scales();
+    chords::scale::print_supported_scales();
 }
 

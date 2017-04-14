@@ -1,6 +1,6 @@
-mod scale;
+pub mod scale;
+pub mod chord;
 mod util;
-mod chord;
 mod attribute;
 
 use self::chord::Chord;
@@ -122,10 +122,3 @@ pub fn analyze(key: &str, scale: &str, extended: bool) -> (Vec<String>,Vec<Chord
     (notes.into_iter().map(|note| util::note_to_str(note).to_uppercase()).collect::<Vec<String>>(), chords)
 }
 
-pub fn print_supported_scales() {
-    scale::print_supported_scales();
-}
-
-pub fn scale_friendly_name(scale: &str) -> String {
-    scale::friendly_name(scale)
-}
