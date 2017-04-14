@@ -1,6 +1,6 @@
-use std::env;
+extern crate chords;
 
-mod chords;
+use std::env;
 
 fn main() {
 

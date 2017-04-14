@@ -3,4 +3,11 @@ name = "chords"
 version = "0.1.0"
 authors = ["antti l"]
 
-[dependencies]
+[lib]
+name = "chords"
+path = "src/lib.rs"
+
+[[bin]]
+name = "chords-bin"
+path = "src/main.rs"
+
