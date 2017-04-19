@@ -6,7 +6,8 @@ use attribute::Attributes;
 
 pub struct Chord {
     pub name: String,
-    pub notes: Vec<String>
+    pub notes: Vec<String>,
+    pub extended: bool
 }
 
 impl Chord {
@@ -36,7 +37,7 @@ impl Chord {
             name.push('*');
         }
 
-        Chord{name: name, notes: notes}
+        Chord{name: name, notes: notes, extended: extended}
     }
 
     // Formats notes according to given src of notes
