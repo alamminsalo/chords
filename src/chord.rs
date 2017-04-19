@@ -33,10 +33,6 @@ impl Chord {
         //Push attributes to name
         name.push_str(attr.resolve().as_ref());
 
-        if extended {
-            name.push('*');
-        }
-
         Chord{name: name, notes: notes, extended: extended}
     }
 
@@ -53,8 +49,15 @@ impl Chord {
 
 impl fmt::Display for Chord {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+
+        // Formatted name
+        let mut name = self.name.clone();
+        if self.extended {
+            name.push('*');
+        }
+
         write!(f, "{0:<18} ({1:})", 
-               &self.name, 
+               &name,
                &self.notes.iter().map(|s| s.to_uppercase()).collect::<Vec<String>>().join(", "))
     }
 }
