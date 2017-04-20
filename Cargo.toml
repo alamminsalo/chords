@@ -17,5 +17,5 @@ path = "src/main.rs"
 doc = false
 
 [dependencies]
-serde_json = "*"
+serde_json = "1.0.0"
 
