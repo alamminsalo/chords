@@ -2,8 +2,12 @@ pub mod scale;
 pub mod chord;
 mod util;
 mod attribute;
+mod json;
 
 use self::chord::Chord;
+
+#[macro_use]
+extern crate serde_json;
 
 /// Returns notes in a given key and scale
 fn get_notes(keystr: &str, scalestr: &str) -> Vec<(char, i8)> {
@@ -122,3 +126,7 @@ pub fn analyze(key: &str, scale: &str, extended: bool) -> (Vec<String>,Vec<Chord
     (notes.into_iter().map(|note| util::note_to_str(note).to_uppercase()).collect::<Vec<String>>(), chords)
 }
 
+pub fn analyze_json(key: &str, scale: &str, extended: bool) -> String {
+    let result = analyze(key, scale, extended);
+    json::serialize(result.0, result.1)
+}
