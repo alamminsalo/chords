@@ -136,6 +136,10 @@ pub fn supported_scales() -> Vec<String> {
     scale::supported_scales()
 }
 
+pub fn supported_scales_json() -> String {
+    json!({"scales": json!(scale::supported_scales())}).to_string()
+}
+
 // extern C api
 
 extern crate libc;
