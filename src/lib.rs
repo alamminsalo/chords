@@ -130,3 +130,28 @@ pub fn analyze_json(key: &str, scale: &str, extended: bool) -> String {
     let result = analyze(key, scale, extended);
     json::serialize(result.0, result.1)
 }
+
+
+// extern C api
+
+extern crate libc;
+use libc::c_char;
+use std::ffi::CStr;
+use std::ffi::CString;
+
+#[no_mangle]
+pub extern fn c_analyze(key: *const c_char, scale: *const c_char, extended: bool) -> *const c_char {
+    let c_key = unsafe {
+        assert!(!key.is_null());
+
+        CStr::from_ptr(key)
+    };
+
+    let c_scale = unsafe {
+        assert!(!scale.is_null());
+
+        CStr::from_ptr(scale)
+    };
+
+    CString::new(analyze_json(c_key.to_str().unwrap(), c_scale.to_str().unwrap(), extended)).unwrap().into_raw()
+}

@@ -69,8 +69,8 @@ pub fn str_to_note(note: &str) -> (char, i8) {
 
     if n.len() > 1 {
         a.1 = match n.chars().nth(1).unwrap() {
-            '#' => 1,
-            '♭' => -1,
+            '#' | 's' => 1,
+            '♭' | 'b' => -1,
             _ => 0
         }
     }
