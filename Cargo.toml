@@ -10,7 +10,6 @@ license = "GPL-3.0"
 [lib]
 name = "chords"
 path = "src/lib.rs"
-crate-type = ["staticlib"]
 
 [[bin]]
 name = "chords"
