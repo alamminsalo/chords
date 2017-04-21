@@ -32,20 +32,17 @@ pub fn chromatic_notes(root: (char, i8)) -> Vec<(char, i8)> {
 
 pub fn print_supported_scales() {
     println!("Supported scales:");
-    println!("\tmajor");
-    println!("\tminor");
-    println!("\tharmonicminor");
-    println!("\tmelodicminor");
-    println!("\tchromatic");
-    println!("\tovertone");
-    println!("\twholetone");
-    println!("\tdorian");
-    println!("\tphyrgian");
-    println!("\tlydian");
-    println!("\taeolian");
-    println!("\tlocrian");
-    println!("\taugmented");
+    for scale in supported_scales() {
+        println!("\t{}", scale);
+    }
     println!("Custom scale syntax: --scale 1,2,1,3,2,1");
+}
+
+pub fn supported_scales() -> Vec<String> {
+    vec!["major", "minor", "harmonicminor", "melodicminor",
+    "dorian", "phyrgian", "lydian", "locrian", "mixolydian",
+    "overtone", "augmented", "wholetone"
+    ].iter().map(|s| s.to_string()).collect()
 }
 
 /// Returns scales by name

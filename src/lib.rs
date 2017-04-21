@@ -131,6 +131,10 @@ pub fn analyze_json(key: &str, scale: &str, extended: bool) -> String {
     json::serialize(result.0, result.1)
 }
 
+// Return lib supported scales
+pub fn supported_scales() -> Vec<String> {
+    scale::supported_scales()
+}
 
 // extern C api
 
