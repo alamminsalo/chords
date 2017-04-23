@@ -21,8 +21,7 @@ fn get_notes(keystr: &str, scalestr: &str) -> Vec<(char, i8)> {
     chromatic_notes.into_iter().enumerate()
         .filter(|&(index, _)| scale.contains(&(index as u8)))
         .map(|(_, e)| e)
-        .collect()
-}
+        .collect() }
 
 //Returns list of chords a given rootnote can create with given list of notes
 fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>, extended: bool) -> Vec<Chord> {
@@ -150,16 +149,17 @@ use std::ffi::CString;
 #[no_mangle]
 pub extern fn c_analyze(key: *const c_char, scale: *const c_char, extended: bool) -> *const c_char {
     let c_key = unsafe {
-        assert!(!key.is_null());
-
         CStr::from_ptr(key)
     };
 
     let c_scale = unsafe {
-        assert!(!scale.is_null());
-
         CStr::from_ptr(scale)
     };
 
-    CString::new(analyze_json(c_key.to_str().unwrap(), c_scale.to_str().unwrap(), extended)).unwrap().into_raw()
+    CString::new(analyze_json(c_key.to_str().unwrap(), c_scale.to_str().unwrap(), true)).unwrap().into_raw()
+}
+
+#[no_mangle]
+pub extern fn c_scales() -> *const c_char {
+    CString::new(supported_scales_json()).unwrap().into_raw()
 }
