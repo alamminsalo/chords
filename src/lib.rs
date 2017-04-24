@@ -156,7 +156,7 @@ pub extern fn c_analyze(key: *const c_char, scale: *const c_char, extended: bool
         CStr::from_ptr(scale)
     };
 
-    CString::new(analyze_json(c_key.to_str().unwrap(), c_scale.to_str().unwrap(), true)).unwrap().into_raw()
+    CString::new(analyze_json(c_key.to_str().unwrap(), c_scale.to_str().unwrap(), extended)).unwrap().into_raw()
 }
 
 #[no_mangle]
