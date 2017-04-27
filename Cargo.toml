@@ -1,6 +1,6 @@
 [package]
 name = "chords"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["antti l"]
 description = "library for getting chords from scale"
 repository="https://github.com/alamminsalo/chords"
@@ -10,14 +10,14 @@ license = "GPL-3.0"
 [lib]
 name = "chords"
 path = "src/lib.rs"
-crate-type = ["dylib"]
+crate-type = ["rlib", "dylib"]
 
 [[bin]]
-name = "chords"
+name = "chords-bin"
 path = "src/main.rs"
 doc = false
 
 [dependencies]
 serde_json = "1.0.0"
 libc = "0.2.21"
-
+ordered-permutation = { git = "https://github.com/alamminsalo/ordered-permutation" }

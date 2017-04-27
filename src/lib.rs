@@ -9,6 +9,9 @@ use self::chord::Chord;
 #[macro_use]
 extern crate serde_json;
 
+extern crate ordered_permutation;
+use ordered_permutation as op;
+
 /// Returns notes in a given key and scale
 fn get_notes(keystr: &str, scalestr: &str) -> Vec<(char, i8)> {
 
@@ -44,55 +47,18 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>, extended: bool) ->
     let chromatic_notes: Vec<(char, i8)> = scale::chromatic_notes(root_note);
     let mut intervals = vec![];
 
-    for v in &flipped[1..] {
+    for v in flipped {
         let interval = chromatic_notes.iter()
-            .position(|&note| note == *v || note == util::alt_note(*v))
+            .position(|&note| note == v || note == util::alt_note(v))
             .expect("Failed to find interval position for note");
         intervals.push(interval as u8);
     }
 
-    // Triads
-    if intervals.len() > 3 {
-        chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3]], false));
-        chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3]], false));
-    }
-
-    // +1
-    if intervals.len() > 4 {
-        chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3], intervals[4]], false));
-        chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3], intervals[4]], false));
-
-        if extended {
-            chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[2], intervals[3], intervals[4]], true));
-        }
-    }
-
-    // +2
-    if intervals.len() > 5 {
-        chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3], intervals[5]], false));
-
-        if extended {
-            chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3], intervals[5]], true));
-
-            // +3
-            chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[3], intervals[4], intervals[5]], true));
-            chords.push(Chord::new(&root_str, vec![0, intervals[2], intervals[3], intervals[4], intervals[5]], true));
-            chords.push(Chord::new(&root_str, vec![0, intervals[1], intervals[2], intervals[3], intervals[4], intervals[5]], true));
-        }
-    }
-
-    if intervals.len() > 6 {
-        if extended {
-            // +4
-            chords.push(Chord::new(&root_str, vec![0, 
-                                   intervals[1], 
-                                   intervals[2], 
-                                   intervals[3], 
-                                   intervals[4], 
-                                   intervals[5], 
-                                   intervals[6]],
-                                   true));
-        }
+    for p in op::permutate(&intervals) {
+	// require 3 notes
+	if p.len() > 2 {
+		chords.push(Chord::new(&root_str, p, false));
+	}
     }
 
     for chord in chords.iter_mut() {
