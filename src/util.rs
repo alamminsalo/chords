@@ -78,3 +78,32 @@ pub fn str_to_note(note: &str) -> (char, i8) {
     a
 }
 
+pub fn indexes(a: &[u8], b: &[u8]) -> Vec<u8> {
+    a.iter().map(|&x| b.iter().position(|&y| x == y).unwrap() as u8).collect()
+}
+
+pub fn weight_levels(a: &[u8]) -> i8 {
+    let mut result = 0;
+
+    result += match a.len() as u8 {
+        3 => 0,
+        4 => 2,
+        5 => 4,
+        _ => 6 
+    };
+
+    for v in a {
+        result += match *v {
+            1 => 3,
+            2 => -2,
+            3 => 2,
+            4 => -3, 
+            5 => 5, 
+            6 => 7, 
+            _ => 9
+        };
+    }
+    
+    result
+}
+

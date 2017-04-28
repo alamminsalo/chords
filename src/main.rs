@@ -43,7 +43,7 @@ fn main() {
     println!("{}\n", notes.join(" "));
     println!("Chords found:");
     for c in chords {
-        println!("{}", c);
+//        println!("{}", c);
     }
 }
 
@@ -58,4 +58,5 @@ fn print_help() {
     println!("\t--help      Prints help");
     chords::scale::print_supported_scales();
 }
+
 

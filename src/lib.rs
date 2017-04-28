@@ -12,66 +12,82 @@ extern crate serde_json;
 extern crate ordered_permutation;
 use ordered_permutation as op;
 
-/// Returns notes in a given key and scale
+// Returns notes in a given key and scale
 fn get_notes(keystr: &str, scalestr: &str) -> Vec<(char, i8)> {
-
     let key = util::str_to_note(keystr);
     let chromatic_notes: Vec<(char, i8)> = scale::chromatic_notes(key);
 
-    ///Return notes filtered by scale
     let scale = scale::get_scale(scalestr);
 
     chromatic_notes.into_iter().enumerate()
         .filter(|&(index, _)| scale.contains(&(index as u8)))
         .map(|(_, e)| e)
-        .collect() }
+        .collect() 
+}
 
-        //Returns list of chords a given rootnote can create with given list of notes
-        fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>, extended: bool) -> Vec<Chord> {
-            let mut chords = vec![];
+//Returns list of chords a given rootnote can create with given list of notes
+fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>, extended: bool) -> Vec<Chord> {
+    let mut chords = vec![];
 
-            //Root note as string presentation
-            let root_str = util::note_to_str(root_note);
+    //Root note as string presentation
+    let root_str = util::note_to_str(root_note);
 
-            //Flip vec to root note
-            let root_index = notes.iter().position(|&note| note == root_note)
-                .expect("Failed to find root index!");
+    //Flip vec to root note
+    let root_index = notes.iter().position(|&note| note == root_note)
+        .expect("Failed to find root index!");
 
-            let a = notes[..root_index].to_vec();
-            let b = notes[root_index..].to_vec();
+    let a = notes[..root_index].to_vec();
+    let b = notes[root_index..].to_vec();
 
-            let mut flipped = vec![];
-            flipped.extend(b);
-            flipped.extend(a);
+    let mut flipped = vec![];
+    flipped.extend(b);
+    flipped.extend(a);
 
-            let chromatic_notes: Vec<(char, i8)> = scale::chromatic_notes(root_note);
-            let mut intervals = vec![];
+    let chromatic_notes: Vec<(char, i8)> = scale::chromatic_notes(root_note);
+    let mut intervals = vec![];
 
-            for v in flipped {
-                let interval = chromatic_notes.iter()
-                    .position(|&note| note == v || note == util::alt_note(v))
-                    .expect("Failed to find interval position for note");
-                intervals.push(interval as u8);
-            }
+    for v in flipped {
+        let interval = chromatic_notes.iter()
+            .position(|&note| note == v || note == util::alt_note(v))
+            .expect("Failed to find interval position for note");
+        intervals.push(interval as u8);
+    }
 
-            let permutations = op::permutate(&intervals[1..]);
-            for mut p in permutations {
-                // push root note
-                p.insert(0, 0);
-                
-                // require 3 notes
-                if p.len() > 2 {
-                    chords.push(Chord::new(&root_str, p, false));
-                }
-            }
+    let mut permutations = op::permutate(&intervals[1..]);
 
-            for chord in chords.iter_mut() {
-                chord.format_notes(notes);
-            }
+    // collect indexes in intervals and sort by weight
+    permutations.sort_by(|a, b| {
+        //collect indexes
+        let aa = util::indexes(&a, &intervals);
+        let bb = util::indexes(&b, &intervals);
 
-            //Return chords
-            chords
+        util::weight_levels(&aa).cmp(&util::weight_levels(&bb))
+    });
+
+    for mut p in permutations {
+        let asd = &util::indexes(&p, &intervals);
+        let w = util::weight_levels(&util::indexes(&p, &intervals));
+        // push root note
+        p.insert(0, 0);
+
+        // require 3 notes
+        if p.len() > 2 {
+            let mut c = Chord::new(&root_str, p, false);
+            c.w = w;
+            println!("{} >> {:?}", c, asd);
+            chords.push(c);
         }
+    }
+
+    for chord in chords.iter_mut() {
+        chord.format_notes(notes);
+    }
+
+    //chords.sort_by(|a, b| { a.name.cmp(&b.name) });
+
+    //Return chords
+    chords
+}
 
 pub fn analyze(key: &str, scale: &str, extended: bool) -> (Vec<String>,Vec<Chord>) {
     //Notes in scale
