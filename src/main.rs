@@ -43,7 +43,7 @@ fn main() {
     println!("{}\n", notes.join(" "));
     println!("Chords found:");
     for c in chords {
-//        println!("{}", c);
+        println!("{}", c);
     }
 }
 

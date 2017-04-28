@@ -7,8 +7,7 @@ use attribute::Attributes;
 pub struct Chord {
     pub name: String,
     pub notes: Vec<String>,
-    pub extended: bool,
-    pub w: i8
+    pub extended: bool
 }
 
 impl Chord {
@@ -34,7 +33,7 @@ impl Chord {
         //Push attributes to name
         name.push_str(attr.resolve().as_ref());
 
-        Chord{name: name, notes: notes, extended: extended, w: 0}
+        Chord{name: name, notes: notes, extended: extended}
     }
 
     // Formats notes according to given src of notes
@@ -57,10 +56,9 @@ impl fmt::Display for Chord {
             name.push('*');
         }
 
-        write!(f, "{0:<18} ({1:}) -> weight {2:}", 
+        write!(f, "{0:<18} ({1:})", 
                &name,
-               &self.notes.iter().map(|s| s.to_uppercase()).collect::<Vec<String>>().join(", "),
-               &self.w)
+               &self.notes.iter().map(|s| s.to_uppercase()).collect::<Vec<String>>().join(", "))
     }
 }
 

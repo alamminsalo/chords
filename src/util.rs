@@ -86,10 +86,11 @@ pub fn weight_levels(a: &[u8]) -> i8 {
     let mut result = 0;
 
     result += match a.len() as u8 {
-        3 => 0,
-        4 => 2,
-        5 => 4,
-        _ => 6 
+        2 => 0,
+        3 => 2,
+        4 => 4,
+        5 => 6,
+        _ => 8 
     };
 
     for v in a {
@@ -99,7 +100,7 @@ pub fn weight_levels(a: &[u8]) -> i8 {
             3 => 2,
             4 => -3, 
             5 => 5, 
-            6 => 7, 
+            6 => 2, 
             _ => 9
         };
     }

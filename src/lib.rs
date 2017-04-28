@@ -65,17 +65,16 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>, extended: bool) ->
     });
 
     for mut p in permutations {
-        let asd = &util::indexes(&p, &intervals);
-        let w = util::weight_levels(&util::indexes(&p, &intervals));
-        // push root note
-        p.insert(0, 0);
 
         // require 3 notes
-        if p.len() > 2 {
-            let mut c = Chord::new(&root_str, p, false);
-            c.w = w;
-            println!("{} >> {:?}", c, asd);
-            chords.push(c);
+        if p.len() > 1 {
+            let is_extended = util::weight_levels(&util::indexes(&p, &intervals)) > 4;
+
+            if extended || !is_extended {
+                // push root note
+                p.insert(0, 0);
+                chords.push(Chord::new(&root_str, p, is_extended));
+            }
         }
     }
 
