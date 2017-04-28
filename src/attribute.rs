@@ -126,11 +126,9 @@ impl Attributes {
                 }
             }
 
-            else {
-                // aug 5
-                if self.has(&[6]) {
-                    val.push_str("aug");
-                }
+            // major 3rd
+            else if self.has(&[8]) {
+                val.push_str("aug");
             }
 
             // 6
