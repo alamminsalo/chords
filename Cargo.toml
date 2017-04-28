@@ -20,4 +20,4 @@ doc = false
 [dependencies]
 serde_json = "1.0.0"
 libc = "0.2.21"
-ordered-permutation = { git = "https://github.com/alamminsalo/ordered-permutation" }
+ordered-permutation = { git = "https://github.com/alamminsalo/ordered-permutation", version = "0.1.1"}
