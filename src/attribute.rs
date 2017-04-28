@@ -156,12 +156,6 @@ impl Attributes {
             val.push_str("5");
         }
 
-        // no5
-        else {
-            val.push_str("no5");
-        }
-
-
         let nth = self.resolve_nth();
         if nth.len() > 0 {
             if val.len() > 0 && &val != "m" && &val != "dim" {
@@ -174,6 +168,10 @@ impl Attributes {
             }
         }
 
+        // no5
+        if !self.has(&[6]) && !self.has(&[7]) && !self.has(&[8]) {
+            val.push_str("no5");
+        }
 
         val
     }

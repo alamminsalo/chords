@@ -85,6 +85,7 @@ pub fn indexes(a: &[u8], b: &[u8]) -> Vec<u8> {
 pub fn weight_levels(a: &[u8]) -> i8 {
     let mut result = 0;
 
+    // eval len
     result += match a.len() as u8 {
         2 => 0,
         3 => 2,
@@ -93,7 +94,8 @@ pub fn weight_levels(a: &[u8]) -> i8 {
         _ => 8 
     };
 
-    for v in a {
+    // eval levels included
+    for v in a.iter() {
         result += match *v {
             1 => 4,
             2 => -2,
@@ -104,7 +106,18 @@ pub fn weight_levels(a: &[u8]) -> i8 {
             _ => 9
         };
     }
-    
+
+    // eval levels not included
+    for v in 1..7 {
+        if !a.contains(&v) {
+            result += match v {
+                2 => 2,
+                4 => 4, 
+                _ => 0
+            };
+        }
+    }
+
     result
 }
 
