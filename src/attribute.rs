@@ -105,6 +105,7 @@ impl Attributes {
 
     //Resolve attributes to chord name
     pub fn resolve(&mut self) -> String {
+        let mut has3 = true;
         let mut val = String::new();
 
         // 3 or m3
@@ -156,7 +157,7 @@ impl Attributes {
         }
 
         else {
-            val.push_str("no3");
+            has3 = false;
         }
 
         let nth = self.resolve_nth();
@@ -176,6 +177,9 @@ impl Attributes {
             val.push_str("no5");
         }
 
+        if !has3 {
+            val.push_str("no3");
+        }
         val
     }
 }
