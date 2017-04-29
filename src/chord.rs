@@ -8,7 +8,8 @@ pub struct Chord {
     pub name: String,
     pub notes: Vec<String>,
     pub extended: bool,
-    pub weight: i8
+    pub weight: i8,
+    pub isValid: bool
 }
 
 impl Chord {
@@ -33,8 +34,15 @@ impl Chord {
 
         //Push attributes to name
         name.push_str(attr.resolve().as_ref());
+        let isValid = !name.contains("no5no3");
 
-        Chord{name: name, notes: notes, extended: extended, weight: weight}
+        Chord{
+            name: name, 
+            notes: notes, 
+            extended: extended, 
+            weight: weight, 
+            isValid: isValid
+        }
     }
 
     // Formats notes according to given src of notes
@@ -70,21 +78,22 @@ impl fmt::Display for Chord {
             name.push('*');
         }
 
-        write!(f, "{0:<18} ({1:}) => {2:}", 
+        write!(f, "{0:<18} ({1:})", 
                &name,
-               &self.notes.iter().map(|s| s.to_uppercase()).collect::<Vec<String>>().join(", "),
-               &self.weight)
+               &self.notes.iter().map(|s| s.to_uppercase()).collect::<Vec<String>>().join(", "))
     }
 }
 
 impl Clone for Chord {
     fn clone(&self) -> Chord {
-        Chord{
-            name: self.name.clone(), 
-            notes: self.notes.clone(), 
-            extended: self.extended, 
-            weight: self.weight
+        Chord {
+            name: self.name.clone(),
+            notes: self.notes.clone(),
+            extended: self.extended,
+            weight: self.weight,
+            isValid: self.isValid
         }
     }
 }
+         
 

@@ -74,7 +74,10 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>, extended: bool) ->
             if extended || !is_extended {
                 // push root note
                 p.insert(0, 0);
-                chords.push(Chord::new(&root_str, p, is_extended, weight));
+                let chord = Chord::new(&root_str, p, is_extended, weight);
+                if chord.isValid {
+                    chords.push(chord);
+                }
             }
         }
     }
