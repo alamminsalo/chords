@@ -132,7 +132,7 @@ pub fn deduplicate(chords: Vec<Chord>) -> Vec<Chord> {
 
         let mut min = i;
 
-        if c.weight > 0 {
+        if c.weight > 2 {
             for (j, d) in chords[i+1..].iter().enumerate() {
                 if c.name != d.name && c.equals(&d) && c.weight > d.weight {
                     min = i + 1+ j;
