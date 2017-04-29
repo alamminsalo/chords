@@ -1,4 +1,4 @@
-/** Note conversion utils **/
+use Chord;
 
 /// Formats notes for easier readability
 /// (eg. A, A# -> A, B♭)
@@ -119,5 +119,33 @@ pub fn weight_levels(a: &[u8]) -> i8 {
     }
 
     result
+}
+
+//Deduplicate chords, prioritizing lower weight
+pub fn deduplicate(chords: Vec<Chord>) -> Vec<Chord> {
+    let mut retained: Vec<usize> = vec![];
+
+    for (i, c) in chords[..].iter().enumerate() {
+        if retained.contains(&i) {
+            continue;
+        }
+
+        let mut min = i;
+
+        if c.weight > 0 {
+            for (j, d) in chords[i+1..].iter().enumerate() {
+                if c.name != d.name && c.equals(&d) && c.weight > d.weight {
+                    min = i + 1+ j;
+                }
+            }
+        }
+
+        retained.push(min);
+    }
+
+    chords.iter().enumerate()
+        .filter(|&(i, _)| retained.contains(&i))
+        .map(|(_, c)| c.clone())
+        .collect::<Vec<Chord>>()
 }
 

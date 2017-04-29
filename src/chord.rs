@@ -7,13 +7,14 @@ use attribute::Attributes;
 pub struct Chord {
     pub name: String,
     pub notes: Vec<String>,
-    pub extended: bool
+    pub extended: bool,
+    pub weight: i8
 }
 
 impl Chord {
 
     ///Constructor from given root note and interval vec
-    pub fn new(root: &String, intervals: Vec<u8>, extended: bool) -> Chord {
+    pub fn new(root: &String, intervals: Vec<u8>, extended: bool, weight: i8) -> Chord {
 
         let mut name = String::new();
         let mut notes = vec![];
@@ -33,7 +34,7 @@ impl Chord {
         //Push attributes to name
         name.push_str(attr.resolve().as_ref());
 
-        Chord{name: name, notes: notes, extended: extended}
+        Chord{name: name, notes: notes, extended: extended, weight: weight}
     }
 
     // Formats notes according to given src of notes
@@ -44,6 +45,19 @@ impl Chord {
                 *el = util::alt_note_str(el.clone());
             }
         }
+    }
+
+    pub fn equals(&self, other: &Chord) -> bool {
+        if self.notes.len() != other.notes.len() {
+            return false;
+        }
+        for v in self.notes.iter() {
+            if !other.notes.contains(v) {
+                return false;
+            }
+        }
+
+        true
     }
 }
 
@@ -56,9 +70,21 @@ impl fmt::Display for Chord {
             name.push('*');
         }
 
-        write!(f, "{0:<18} ({1:})", 
+        write!(f, "{0:<18} ({1:}) => {2:}", 
                &name,
-               &self.notes.iter().map(|s| s.to_uppercase()).collect::<Vec<String>>().join(", "))
+               &self.notes.iter().map(|s| s.to_uppercase()).collect::<Vec<String>>().join(", "),
+               &self.weight)
+    }
+}
+
+impl Clone for Chord {
+    fn clone(&self) -> Chord {
+        Chord{
+            name: self.name.clone(), 
+            notes: self.notes.clone(), 
+            extended: self.extended, 
+            weight: self.weight
+        }
     }
 }
 

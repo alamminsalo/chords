@@ -150,10 +150,13 @@ impl Attributes {
             self.remove(5);
         }
 
-
         // 5
         else if self.has(&[7]) {
             val.push_str("5");
+        }
+
+        else {
+            val.push_str("no3");
         }
 
         let nth = self.resolve_nth();

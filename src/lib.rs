@@ -68,12 +68,13 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>, extended: bool) ->
 
         // require 3 notes
         if p.len() > 1 {
-            let is_extended = util::weight_levels(&util::indexes(&p, &intervals)) > 4;
+            let weight = util::weight_levels(&util::indexes(&p, &intervals));
+            let is_extended = weight > 4;
 
             if extended || !is_extended {
                 // push root note
                 p.insert(0, 0);
-                chords.push(Chord::new(&root_str, p, is_extended));
+                chords.push(Chord::new(&root_str, p, is_extended, weight));
             }
         }
     }
@@ -81,8 +82,6 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>, extended: bool) ->
     for chord in chords.iter_mut() {
         chord.format_notes(notes);
     }
-
-    //chords.sort_by(|a, b| { a.name.cmp(&b.name) });
 
     //Return chords
     chords
@@ -106,6 +105,9 @@ pub fn analyze(key: &str, scale: &str, extended: bool) -> (Vec<String>,Vec<Chord
         }
     }
 
+    // deduplicate
+    chords = util::deduplicate(chords);
+    
     //Return values
     (notes.into_iter().map(|note| util::note_to_str(note).to_uppercase()).collect::<Vec<String>>(), chords)
 }
