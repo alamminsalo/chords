@@ -51,6 +51,15 @@ impl Attributes {
                     val.push_str("add13");
                 }
             }
+            // minor 9
+            else if self.has(&[1]) {
+                val.push_str("m9");
+
+                if self.has(&[9]) {
+                    val.push_str("add13");
+                }
+            }
+
             // 7
             else {
                 val.push_str("7");
@@ -71,32 +80,18 @@ impl Attributes {
 
         // not 7
         else {
-            let mut added = false;
-
             // 6
             if self.has(&[9]) {
                 val.push_str("add6");
-                added = true;
             }
 
             // adds
-            if self.has(&[2]) {
-                if added {
-                    val.push_str(",9");
-                } else {
-                    val.push_str("add9");
-                }
-                added = true;
+            if self.has(&[2]) || self.has(&[1]) {
+                val.push_str("add9");
             }
 
             else if self.has(&[5]) {
-                if added {
-                    val.push_str(",11");
-                }
-                else {
-                    val.push_str("add11");
-                }
-                added = true;
+                val.push_str("add11");
             }
         }
 
@@ -127,11 +122,6 @@ impl Attributes {
                 }
             }
 
-            // major 3rd
-            else if self.has(&[8]) {
-                val.push_str("aug");
-            }
-
             // 6
             if &val != "dim" && self.has(&[7,9]) {
                 val.push_str("6");
@@ -160,26 +150,45 @@ impl Attributes {
             has3 = false;
         }
 
-        let nth = self.resolve_nth();
-        if nth.len() > 0 {
-            if val.len() > 0 && &val != "m" && &val != "dim" {
-                val.push_str("(");
-                val.push_str(nth.as_ref());
-                val.push_str(")");
+        // aug check
+        if self.has(&[8]) {
+            if self.has(&[7]) || self.has(&[6]) {
+                val.push_str("+aug");
             }
             else {
-                val.push_str(nth.as_ref());
+                val.push_str("aug");
             }
+        }
+
+        let has5 = !(!self.has(&[6]) && !self.has(&[7]) && !self.has(&[8]));
+
+        let nth = self.resolve_nth();
+
+        //additional markings
+        if nth.len() > 0 || !has5 || !has3 {
+            val.push_str("(");
+        }
+
+        // nth
+        if nth.len() > 0 {
+            val.push_str(nth.as_ref());
         }
 
         // no5
-        if !self.has(&[6]) && !self.has(&[7]) && !self.has(&[8]) {
+        if !has5 {
             val.push_str("no5");
         }
 
+        // no3
         if !has3 {
             val.push_str("no3");
         }
+
+        //close add. markings
+        if nth.len() > 0 || !has5 || !has3 {
+            val.push_str(")");
+        }
+
         val
     }
 }
