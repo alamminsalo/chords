@@ -111,7 +111,7 @@ pub fn weight_levels(a: &[u8]) -> i8 {
     for v in 1..7 {
         if !a.contains(&v) {
             result += match v {
-                2 => 2,
+                2 => 4,
                 4 => 4, 
                 _ => 0
             };
@@ -132,7 +132,7 @@ pub fn deduplicate(chords: Vec<Chord>) -> Vec<Chord> {
 
         let mut min = i;
 
-        if c.weight > 2 {
+        if c.weight > 4 {
             for (j, d) in chords[i+1..].iter().enumerate() {
                 if c.name != d.name && c.equals(&d) && c.weight > d.weight {
                     min = i + 1+ j;
