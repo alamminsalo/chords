@@ -184,6 +184,11 @@ impl Attributes {
             val.push_str("no3");
         }
 
+        // If both 3rds, stop
+        if self.has(&[4]) && self.has(&[3]) {
+            val.push_str("inv3s");
+        }
+
         //close add. markings
         if nth.len() > 0 || !has5 || !has3 {
             val.push_str(")");

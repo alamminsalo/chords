@@ -9,7 +9,7 @@ pub struct Chord {
     pub notes: Vec<String>,
     pub extended: bool,
     pub weight: i8,
-    pub isValid: bool
+    pub valid: bool
 }
 
 impl Chord {
@@ -34,14 +34,14 @@ impl Chord {
 
         //Push attributes to name
         name.push_str(attr.resolve().as_ref());
-        let isValid = !name.contains("no5no3");
+        let valid = !name.contains("no5no3") && !name.contains("inv3s");
 
         Chord{
             name: name, 
             notes: notes, 
             extended: extended, 
             weight: weight, 
-            isValid: isValid
+            valid: valid 
         }
     }
 
@@ -91,7 +91,7 @@ impl Clone for Chord {
             notes: self.notes.clone(),
             extended: self.extended,
             weight: self.weight,
-            isValid: self.isValid
+            valid: self.valid
         }
     }
 }
