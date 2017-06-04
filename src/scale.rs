@@ -41,7 +41,7 @@ pub fn print_supported_scales() {
 pub fn supported_scales() -> Vec<String> {
     vec!["major", "minor", "harmonicminor", "melodicminor",
     "dorian", "phrygian", "lydian", "locrian", "mixolydian",
-    "overtone", "augmented", "wholetone"
+    "overtone", "augmented", "wholetone", "pentatonic"
     ].iter().map(|s| s.to_string()).collect()
 }
 
@@ -60,6 +60,7 @@ pub fn get_scale(scale: &str) -> Vec<u8> {
         "overtone"                              => vec![2,2,2,1,2,1],
         "augmented"                             => vec![1,3,1,3,1],
         "wholetone"                             => vec![2,2,2,2,2,2],
+        "pentatonic"                            => vec![2,2,3,2], 
         "chromatic"                             => vec![1,1,1,1,1,1,1,1,1,1,1,1],
         _                                       => parse_scale(scale)
     })
