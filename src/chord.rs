@@ -5,7 +5,7 @@ use crate::attribute::Attributes;
 use crate::scale;
 use crate::util;
 
-#[derive(Deserialize,Serialize,PartialEq,Clone)]
+#[derive(Default,Deserialize,Serialize,PartialEq,Clone)]
 pub struct Chord {
     pub name: String,
     pub notes: Vec<String>,
