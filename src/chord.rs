@@ -1,9 +1,11 @@
 use std::fmt;
 
+use serde_derive::{Deserialize, Serialize};
 use crate::attribute::Attributes;
 use crate::scale;
 use crate::util;
 
+#[derive(Deserialize,Serialize,PartialEq,Clone)]
 pub struct Chord {
     pub name: String,
     pub notes: Vec<String>,
@@ -89,17 +91,5 @@ impl fmt::Display for Chord {
                 .collect::<Vec<String>>()
                 .join(", ")
         )
-    }
-}
-
-impl Clone for Chord {
-    fn clone(&self) -> Chord {
-        Chord {
-            name: self.name.clone(),
-            notes: self.notes.clone(),
-            extended: self.extended,
-            weight: self.weight,
-            valid: self.valid,
-        }
     }
 }
