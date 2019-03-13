@@ -1,11 +1,11 @@
 use std::fmt;
 
-use serde_derive::{Deserialize, Serialize};
 use crate::attribute::Attributes;
 use crate::scale;
 use crate::util;
+use serde_derive::{Deserialize, Serialize};
 
-#[derive(Default,Deserialize,Serialize,PartialEq,Clone)]
+#[derive(Default, Deserialize, Serialize, PartialEq, Clone)]
 pub struct Chord {
     pub name: String,
     pub notes: Vec<String>,
