@@ -1,17 +1,14 @@
-extern crate chords;
-
 use std::env;
 
 fn main() {
-
-    ///defaults
+    // defaults
     let mut key = String::from("C");
     let mut scale = String::from("major");
     let mut extended = false;
 
     let mut iter = env::args();
 
-    //Skip first arg
+    // Skip first arg
     iter.next();
 
     while let Some(arg) = iter.next() {
@@ -39,7 +36,11 @@ fn main() {
     let (notes, chords) = chords::analyze(&key, &scale, extended);
 
     //Print results
-    println!("Notes in {} {} scale:", &key.to_uppercase(), &chords::scale::friendly_name(&scale));
+    println!(
+        "Notes in {} {} scale:",
+        &key.to_uppercase(),
+        &chords::scale::friendly_name(&scale)
+    );
     println!("{}\n", notes.join(" "));
     println!("Chords found:");
     for c in chords {
@@ -58,5 +59,3 @@ fn print_help() {
     println!("\t--help      Prints help");
     chords::scale::print_supported_scales();
 }
-
-

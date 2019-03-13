@@ -1,15 +1,17 @@
-pub mod scale;
-pub mod chord;
-mod util;
-mod attribute;
-mod json;
-
-use self::chord::Chord;
-
 #[macro_use]
 extern crate serde_json;
 
-extern crate ordered_permutation;
+mod attribute;
+pub mod chord;
+#[cfg(feature = "ffi_c")]
+mod ffi;
+mod json;
+pub mod scale;
+mod util;
+
+use self::chord::Chord;
+#[cfg(feature = "ffi_c")]
+pub use ffi::*;
 use ordered_permutation as op;
 
 // Returns notes in a given key and scale
@@ -19,10 +21,12 @@ fn get_notes(keystr: &str, scalestr: &str) -> Vec<(char, i8)> {
 
     let scale = scale::get_scale(scalestr);
 
-    chromatic_notes.into_iter().enumerate()
+    chromatic_notes
+        .into_iter()
+        .enumerate()
         .filter(|&(index, _)| scale.contains(&(index as u8)))
         .map(|(_, e)| e)
-        .collect() 
+        .collect()
 }
 
 //Returns list of chords a given rootnote can create with given list of notes
@@ -33,7 +37,9 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>, extended: bool) ->
     let root_str = util::note_to_str(root_note);
 
     //Flip vec to root note
-    let root_index = notes.iter().position(|&note| note == root_note)
+    let root_index = notes
+        .iter()
+        .position(|&note| note == root_note)
         .expect("Failed to find root index!");
 
     let a = notes[..root_index].to_vec();
@@ -47,7 +53,8 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>, extended: bool) ->
     let mut intervals = vec![];
 
     for v in flipped {
-        let interval = chromatic_notes.iter()
+        let interval = chromatic_notes
+            .iter()
             .position(|&note| note == v || note == util::alt_note(v))
             .expect("Failed to find interval position for note");
         intervals.push(interval as u8);
@@ -65,7 +72,6 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>, extended: bool) ->
     });
 
     for mut p in permutations {
-
         // require 3 notes
         if p.len() > 1 {
             let weight = util::weight_levels(&util::indexes(&p, &intervals));
@@ -90,18 +96,18 @@ fn get_chords(root_note: (char, i8), notes: &Vec<(char, i8)>, extended: bool) ->
     chords
 }
 
-pub fn analyze(key: &str, scale: &str, extended: bool) -> (Vec<String>,Vec<Chord>) {
+pub fn analyze(key: &str, scale: &str, extended: bool) -> (Vec<String>, Vec<Chord>) {
     //Notes in scale
     let mut notes = get_notes(&key, &scale);
 
     //Format notes for readability
     match scale {
-        "chromatic" => {},
-        _ => notes = util::formatted_notes(notes)
+        "chromatic" => {}
+        _ => notes = util::formatted_notes(notes),
     }
 
     //Chords in scale
-    let mut chords: Vec<Chord> = vec![]; 
+    let mut chords: Vec<Chord> = vec![];
     if scale != "chromatic" {
         for v in &notes {
             chords.extend(get_chords(*v, &notes, extended));
@@ -110,9 +116,15 @@ pub fn analyze(key: &str, scale: &str, extended: bool) -> (Vec<String>,Vec<Chord
 
     // deduplicate
     chords = util::deduplicate(chords);
-    
+
     //Return values
-    (notes.into_iter().map(|note| util::note_to_str(note).to_uppercase()).collect::<Vec<String>>(), chords)
+    (
+        notes
+            .into_iter()
+            .map(|note| util::note_to_str(note).to_uppercase())
+            .collect::<Vec<String>>(),
+        chords,
+    )
 }
 
 pub fn analyze_json(key: &str, scale: &str, extended: bool) -> String {
@@ -126,30 +138,5 @@ pub fn supported_scales() -> Vec<String> {
 }
 
 pub fn supported_scales_json() -> String {
-    json!({"scales": json!(scale::supported_scales())}).to_string()
-}
-
-// extern C api
-
-extern crate libc;
-use libc::c_char;
-use std::ffi::CStr;
-use std::ffi::CString;
-
-#[no_mangle]
-pub extern fn c_analyze(key: *const c_char, scale: *const c_char, extended: bool) -> *const c_char {
-    let c_key = unsafe {
-        CStr::from_ptr(key)
-    };
-
-    let c_scale = unsafe {
-        CStr::from_ptr(scale)
-    };
-
-    CString::new(analyze_json(c_key.to_str().unwrap(), c_scale.to_str().unwrap(), extended)).unwrap().into_raw()
-}
-
-#[no_mangle]
-pub extern fn c_scales() -> *const c_char {
-    CString::new(supported_scales_json()).unwrap().into_raw()
+    json!({ "scales": json!(scale::supported_scales()) }).to_string()
 }
