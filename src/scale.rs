@@ -1,33 +1,94 @@
 use crate::util;
 
+#[derive(PartialEq, Clone, Copy)]
+pub enum Scale {
+    Major,
+    Minor,
+    Harmonicminor,
+    Melodicminor,
+    Dorian,
+    Phrygian,
+    Lydian,
+    Locrian,
+    Mixolydian,
+    Overtone,
+    Augmented,
+    Wholetone,
+    Pentatonic,
+    Chromatic,
+}
+
+impl Into<String> for Scale {
+    fn into(self) -> String {
+        match self {
+            Scale::Major => "major",
+            Scale::Minor => "minor",
+            Scale::Harmonicminor => "harmonicminor",
+            Scale::Melodicminor => "melodicminor",
+            Scale::Dorian => "dorian",
+            Scale::Phrygian => "phrygian",
+            Scale::Lydian => "lydian",
+            Scale::Locrian => "locrian",
+            Scale::Mixolydian => "mixolydian",
+            Scale::Overtone => "overtone",
+            Scale::Augmented => "augmented",
+            Scale::Wholetone => "wholetone",
+            Scale::Pentatonic => "pentatonic",
+            Scale::Chromatic => "chromatic",
+        }
+        .into()
+    }
+}
+
+impl From<String> for Scale {
+    fn from(s: String) -> Self {
+        match &s[..] {
+            "major" => Scale::Major,
+            "minor" => Scale::Minor,
+            "harmonicminor" => Scale::Harmonicminor,
+            "melodicminor" => Scale::Melodicminor,
+            "dorian" => Scale::Dorian,
+            "phrygian" => Scale::Phrygian,
+            "lydian" => Scale::Lydian,
+            "locrian" => Scale::Locrian,
+            "mixolydian" => Scale::Mixolydian,
+            "overtone" => Scale::Overtone,
+            "augmented" => Scale::Augmented,
+            "wholetone" => Scale::Wholetone,
+            "pentatonic" => Scale::Pentatonic,
+            _ => Scale::Chromatic,
+        }
+    }
+}
+
 // Returns all notes on chromatic scale
 pub fn chromatic_notes(root: (char, i8)) -> Vec<(char, i8)> {
     let mut v = vec![];
 
-    v.push(('a', 0));
     // a
-    v.push(('a', 1));
+    v.push(('a', 0));
     // a sharp
-    v.push(('b', 0));
+    v.push(('a', 1));
     // b
-    v.push(('c', 0));
+    v.push(('b', 0));
     // c
-    v.push(('c', 1));
+    v.push(('c', 0));
     // c sharp
-    v.push(('d', 0));
+    v.push(('c', 1));
     // d
-    v.push(('d', 1));
+    v.push(('d', 0));
     // d sharp
-    v.push(('e', 0));
+    v.push(('d', 1));
     // e
-    v.push(('f', 0));
+    v.push(('e', 0));
     // f
-    v.push(('f', 1));
+    v.push(('f', 0));
     // f sharp
-    v.push(('g', 0));
+    v.push(('f', 1));
     // g
-    v.push(('g', 1));
+    v.push(('g', 0));
     // g sharp
+    v.push(('g', 1));
 
     // Split and join according to root note
     let root_index = v

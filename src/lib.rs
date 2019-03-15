@@ -6,6 +6,7 @@ pub mod chord;
 #[cfg(feature = "ffi_c")]
 mod ffi;
 mod json;
+pub mod note;
 pub mod scale;
 mod util;
 
