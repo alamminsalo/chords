@@ -8,7 +8,7 @@ mod ffi;
 mod json;
 pub mod note;
 pub mod scale;
-mod util;
+pub mod util;
 
 use self::chord::Chord;
 #[cfg(feature = "ffi_c")]
